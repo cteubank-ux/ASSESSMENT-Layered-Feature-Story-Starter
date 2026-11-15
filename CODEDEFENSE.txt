@@ -1,0 +1,32 @@
+Brief Code Defense – Layered Feature Story
+1. HTML structure
+
+I used semantic HTML elements such as header, main, article, section, and footer to organize the content. This makes the page easier to understand for browsers, screen readers, and people navigating the story. I also used heading levels in a logical order to establish the content hierarchy.
+
+2. CSS Grid and Flexbox
+
+I used CSS Grid and Flexbox to create the main page layout and organize the content. These layout methods allow the page to adjust to different screen sizes without relying on fixed positioning.
+
+3. Positioning and layering
+
+I used relative and absolute positioning for elements that need to be placed in relation to a specific container. I also used sticky positioning for the story guide so it remains visible while scrolling but stays within its containing section.
+
+4. Z-index and stacking contexts
+
+I created CSS layer tokens using custom properties, such as --layer-raised and --layer-sticky, to control the stacking order. This keeps the layering consistent and avoids using random z-index values throughout the stylesheet.
+
+5. Responsive design
+
+I used media queries and flexible sizing to make the page responsive. I tested different viewport widths to make sure the content remains readable and the layout adapts to smaller screens.
+
+6. CSS Shapes and image wrapping
+
+I used shape-outside and shape-margin to allow the story text to wrap around the portrait image on larger screens. I placed this inside a @supports rule so browsers that don't support the feature can still display the content in a readable layout.
+
+7. Clip-path and progressive enhancement
+
+I used clip-path as a visual enhancement to create a decorative image shape. The image and caption remain visible when that effect is disabled, so the content doesn't depend on the decorative styling.
+
+8. Accessibility and testing
+
+I tested the page for reading order, keyboard navigation, responsive behavior, content growth, and link functionality. I also tested what happens when certain CSS features are disabled to make sure the story remains usable.

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Composition Plan — More Than Words</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      max-width: 96rem;
+      margin: 0 auto;
+      padding: clamp(1rem, 3vw, 2rem);
+      color: #263238;
+      background: #f7f3ea;
+      font: 1rem/1.55 Arial, Helvetica, sans-serif;
+    }
+    h1, h2 { color: #12494d; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 72rem; border-collapse: collapse; background: #fff; }
+    th, td { padding: .75rem; border: 1px solid #d9d0c2; text-align: left; vertical-align: top; }
+    th { color: #fff; background: #176b70; }
+    tbody tr:nth-child(even) { background: #ebe4d8; }
+    a { color: #176b70; }
+    code { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>L6 · Composition Plan</h1>
+  <p><strong>Color theme:</strong> turquoise, warm sandstone, and muted clay. This is an editorial design direction inspired by turquoise and the regional landscape, not a claim that one palette represents all Indigenous peoples or all Diné artistic traditions.</p>
+  <p><strong>Project:</strong> More Than Words: Keeping the Diné Language Alive. The article remains readable in normal source order. Grid controls the page regions; positioning is reserved for the bounded relationships below.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Content purpose</th>
+          <th>Normal-flow baseline</th>
+          <th>Chosen technique and why</th>
+          <th>Containing block / stacking context</th>
+          <th>Fallback or disengagement</th>
+          <th>Required test</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>.issue-badge</code></td>
+          <td>Displays a short topic label without interrupting the headline and introduction.</td>
+          <td>The badge follows the lede in source order and remains part of the header content.</td>
+          <td><code>position: absolute</code> with logical insets; it is anchored to the header rather than the viewport.</td>
+          <td><code>.feature-header</code> has <code>position: relative</code> and establishes the containing block. The badge uses <code>--layer-raised</code>.</td>
+          <td>At widths up to 24rem, it moves to the upper-left and the header reserves extra top padding. With CSS disabled, it returns to normal inline flow.</td>
+          <td>320px, long-title growth, 200% zoom, keyboard focus order, and CSS-disabled reading order.</td>
+        </tr>
+        <tr>
+          <td><code>.story-guide</code></td>
+          <td>Provides in-page navigation to the story sections.</td>
+          <td>The aside appears before the article in the DOM and occupies the first grid cell.</td>
+          <td><code>position: sticky</code> with <code>inset-block-start</code> keeps navigation available during long-page reading without removing it from flow.</td>
+          <td>The sticky item is in the first row of the <code>main</code> grid; that row is shared with the article and bounds the sticky travel. It uses <code>--layer-sticky</code>.</td>
+          <td>Sticky is enabled only at 52rem and wider. At narrower widths and with CSS disabled, navigation remains a normal-flow block.</td>
+          <td>Scroll from page top through article and to the end of the article/grid row; confirm it stops at the containing-block boundary and links activate.</td>
+        </tr>
+        <tr>
+          <td><code>.pull-quote</code></td>
+          <td>Emphasizes an editorial summary without presenting it as a quotation from a real speaker.</td>
+          <td>The blockquote follows the feature figure in source order and precedes the article paragraphs.</td>
+          <td>At desktop widths, a negative block-start margin creates a restrained overlap into the figure's reserved empty lower padding. The opaque quote background keeps the figure caption visible.</td>
+          <td>Relative positioning and <code>--layer-raised</code>; it overlaps only the reserved padding area of the preceding <code>.feature-figure</code>, not text or controls.</td>
+          <td>Overlap is disabled below 52rem; the quote returns to a positive normal-flow margin. Without CSS, it is an ordinary blockquote.</td>
+          <td>768px and 1280px, doubled paragraph content, 200% zoom, and pointer/keyboard checks for nearby links.</td>
+        </tr>
+        <tr>
+          <td><code>.feature-figure</code> and its image</td>
+          <td>Provides an introductory visual while its caption explains that the image is an abstract starter illustration.</td>
+          <td>The figure and caption are in normal article flow.</td>
+          <td>Rounded corners provide a visual frame. A polygon <code>clip-path</code> is a decorative crop enhancement only.</td>
+          <td>The figure is the local visual frame. No arbitrary high layer is applied. The clip path affects only the image, not the caption or story text.</td>
+          <td>Rounded corners are nonessential decoration. If <code>clip-path</code> is unsupported or disabled, the image displays as a complete rectangle.</td>
+          <td>Disable <code>clip-path</code> in DevTools and confirm the complete image and caption remain visible; inspect at 320px, 768px, and 1280px.</td>
+        </tr>
+        <tr>
+          <td><code>.shape-portrait</code></td>
+          <td>Adds a secondary abstract illustration beside the section about intergenerational learning.</td>
+          <td>The image is a block in the article flow, before the paragraphs that describe language learning.</td>
+          <td>At desktop widths, <code>float: inline-start</code>, <code>shape-outside: circle(50%)</code>, and <code>shape-margin</code> create an editorial text wrap.</td>
+          <td>The float participates in the containing article section's flow; <code>display: flow-root</code> on each article section contains the float.</td>
+          <td>Float and shape wrapping are applied only inside <code>@supports</code> and at 52rem and wider. Otherwise the image is centered in normal flow and the prose stays full width.</td>
+          <td>Disable <code>shape-outside</code>; verify text returns to full-width flow. Add doubled paragraph text and confirm the float is passed and later text returns to full measure.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h2>Layer scale</h2>
+  <ul>
+    <li><code>--layer-base: 0</code> — baseline layer.</li>
+    <li><code>--layer-raised: 10</code> — anchored badge and pull quote.</li>
+    <li><code>--layer-sticky: 20</code> — sticky story navigation.</li>
+    <li><code>--layer-overlay: 30</code> — reserved token; no overlay is currently required.</li>
+  </ul>
+  <p>Layer values are tokens rather than one-off numbers. No decorative element intercepts pointer input. The page avoids clipped essential content, fixed-height prose boxes, and arbitrary positional columns.</p>
+  <p><a href="index.html">Return to the feature story</a></p>
+</body>
+</html>
